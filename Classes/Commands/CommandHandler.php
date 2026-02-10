@@ -204,6 +204,14 @@ class CommandHandler
                     ]);
                     return;
                 }
+
+                // No command matched for regular text message
+                $chatId = $update->message->chat->id;
+                $this->telegram->sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => '❓ I don\'t understand that message. Use /help to see available commands.',
+                ]);
+                return;
             }
         }
 
@@ -224,6 +232,14 @@ class CommandHandler
                         return;
                     }
                 }
+
+                // No callback handler matched
+                $this->telegram->answerCallbackQuery([
+                    'callback_query_id' => $update->callbackQuery->id,
+                    'text' => '❌ Unknown action.',
+                    'show_alert' => false,
+                ]);
+                return;
             }
         }
 
