@@ -33,6 +33,11 @@ class Log
         $this->maxFiles   = (int) env('LOG_MAX_FILES', 7);
         $this->dateFormat = env('LOG_DATE_FORMAT', 'Y-m-d H:i:s');
 
+        // Convert relative path to absolute using base_path
+        if (!str_starts_with($this->path, '/')) {
+            $this->path = base_path($this->path);
+        }
+
         if (!is_dir($this->path)) {
             mkdir($this->path, 0755, true);
         }
