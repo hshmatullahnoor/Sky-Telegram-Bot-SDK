@@ -204,14 +204,6 @@ class CommandHandler
                     ]);
                     return;
                 }
-
-                // No command matched for regular text message
-                $chatId = $update->message->chat->id;
-                $this->telegram->sendMessage([
-                    'chat_id' => $chatId,
-                    'text' => '❓ I don\'t understand that message. Use /help to see available commands.',
-                ]);
-                return;
             }
         }
 
