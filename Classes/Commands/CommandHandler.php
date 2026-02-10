@@ -6,6 +6,7 @@ use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 use Classes\Log;
 use Classes\Commands\Users\HelpCommand;
+use Database\Models\User;
 
 class CommandHandler
 {
@@ -178,6 +179,9 @@ class CommandHandler
     {
         $type = $update->detectType();
 
+        // Save user to database
+        $this->saveUser($update);
+
         // Handle text messages
         if ($type === 'message' && $update->message) {
             $text = $update->message->text ?? '';
@@ -284,6 +288,32 @@ class CommandHandler
                     $command->handle();
                     return;
                 }
+            }
+        }
+    }
+
+    /**
+     * Save or update user in database from the update.
+     */
+    private function saveUser(Update $update): void
+    {
+        $from = null;
+
+        if ($update->message) {
+            $from = $update->message->from;
+        } elseif ($update->callbackQuery) {
+            $from = $update->callbackQuery->from;
+        } elseif ($update->inlineQuery) {
+            $from = $update->inlineQuery->from;
+        } elseif ($update->editedMessage) {
+            $from = $update->editedMessage->from;
+        }
+
+        if ($from && !empty($from->id)) {
+            try {
+                User::fromTelegram($from);
+            } catch (\Throwable $e) {
+                Log::error('Failed to save user: ' . $e->getMessage());
             }
         }
     }
