@@ -194,6 +194,16 @@ class CommandHandler
                         return;
                     }
                 }
+
+                // If text starts with "/" and no command matched, send unknown command message
+                if (str_starts_with($text, '/')) {
+                    $chatId = $update->message->chat->id;
+                    $this->telegram->sendMessage([
+                        'chat_id' => $chatId,
+                        'text' => '❌ Unknown command. Use /help to see available commands.',
+                    ]);
+                    return;
+                }
             }
         }
 
