@@ -179,6 +179,10 @@ $driver = $dbConfig['driver'];
 
 if ($driver === 'sqlite') {
     $path = $dbConfig['connections']['sqlite']['path'];
+    // Convert relative path to absolute using base_path
+    if (!str_starts_with($path, '/')) {
+        $path = base_path($path);
+    }
     $dir = dirname($path);
     if (!is_dir($dir)) {
         mkdir($dir, 0755, true);
