@@ -1,0 +1,5 @@
+.env
+vendor/
+composer.lock
+storage/logs/
+storage/database.sqlite
